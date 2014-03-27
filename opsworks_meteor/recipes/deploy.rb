@@ -24,25 +24,16 @@ bash "Deploy Meteor" do
   
     code <<-EOF
 
-    touch /srv/www/skyveri_main_site/current/TEST.js
-    echo "ABC" > /srv/www/skyveri_main_site/current/TEST.js
-
     cd /srv/www/#{app_slug_name}/current/
-
-    echo "1" > server.js
 
     rm -rf /tmp/meteor_tmp
     mkdir -p /tmp/meteor_tmp
-
-    echo "2" > server.js
 
     mv ./config /tmp/meteor_tmp
     mv ./log /tmp/meteor_tmp
     mv ./opsworks.js /tmp/meteor_tmp
     mv ./public /tmp/meteor_tmp
     mv ./tmp /tmp/meteor_tmp
-
-    echo "3" > server.js
 
     rm -rf ./bundle
     rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
@@ -55,8 +46,6 @@ bash "Deploy Meteor" do
     echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
     chown    deploy:www-data ./server.js
     chown -R deploy:www-data ./bundle
-
-    echo "123" > server.js
 
     mv /tmp/meteor_tmp/config ./
     mv /tmp/meteor_tmp/log ./
