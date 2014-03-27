@@ -2,6 +2,12 @@ bash "Deploy Meteor" do
   user "root"
   code <<-EOF
   cd /srv/www/skyveri_main_site/current/
+
+  rm -rf ./opsworks.js
+  rm -rf ./config
+  rm -rf ./
+  rm -rf ./
+
   rm -rf ./bundle
   rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
   mrt install
