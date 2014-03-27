@@ -1,11 +1,6 @@
-bash "Install Meteor" do
-  user "ubuntu"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "echo 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
-  command "curl https://install.meteor.com | /bin/sh"
-  cwd "/srv/www/skyveri_main_site/current"
+bash "change system greeting" do
+  user "root"
+  code <<-EOH
+  echo "Hello OpsWorks World" > /etc/motd
+  EOH
 end
