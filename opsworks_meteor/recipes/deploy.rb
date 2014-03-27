@@ -1,4 +1,4 @@
-bash "Install Meteor" do
+bash "Deploy Meteor" do
   user "root"
   code <<-EOF
   cd /srv/www/skyveri_main_site/current/
