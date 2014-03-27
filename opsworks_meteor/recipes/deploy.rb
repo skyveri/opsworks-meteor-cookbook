@@ -13,13 +13,13 @@ bash "Deploy Meteor" do
     domain_name = deploy[:domains][0]
 
     if deploy[:ssl_support]
-      domain_name_prefix = "https://"
+      protocol_prefix = "https://"
     else
-      domain_name_prefix = "http://"
+      protocol_prefix = "http://"
     end
   
     Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
-    Chef::Log.debug("ROOT_URL: #{domain_name_prefix}#{domain_name}")
+    Chef::Log.debug("ROOT_URL: #{protocol_prefix}#{domain_name}")
     Chef::Log.debug("App slug name (the app_slug_name variable): #{app_slug_name}")
   
     code <<-EOF
@@ -40,7 +40,7 @@ bash "Deploy Meteor" do
     meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-    echo "process.env.ROOT_URL  = '#{domain_name_prefix}#{domain_name}';" > server.js
+    echo "process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';" > server.js
     echo "process.env.MONGO_URL = '#{node[:meteor][:MONGO_URL]}';" >> server.js
     echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
     chown    deploy:www-data ./server.js
