@@ -23,6 +23,10 @@ bash "Deploy Meteor" do
     Chef::Log.debug("App slug name (the app_slug_name variable): #{app_slug_name}")
   
     code <<-EOF
+
+    touch /srv/www/skyveri_main_site/current/TEST.js
+    echo "ABC" > /srv/www/skyveri_main_site/current/TEST.js
+
     cd /srv/www/#{app_slug_name}/current/
 
     echo "1" > server.js
