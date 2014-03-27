@@ -18,7 +18,9 @@ bash "Deploy Meteor" do
   meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
   tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
   rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-  echo "process.env.ROOT_URL = 'http://54.84.83.86'; process.env.MONGO_URL = 'mongodb://skyveri_readonly:Feiun5s09@oceanic.mongohq.com:10016/skyveri_main'; process.env.PORT = 80; require('./bundle/main.js'); " > server.js
+  echo "process.env.ROOT_URL  = '#{node[:skyveri][:skyver_main_site][:ROOT_URL]}';" > server.js
+  echo "process.env.MONGO_URL = '#{node[:skyveri][:skyver_main_site][:MONGO_URL]}';" >> server.js
+  echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
   chown deploy:www-data /srv/www/skyveri_main_site/current/server.js
   chown -R deploy:www-data /srv/www/skyveri_main_site/current/bundle
 
