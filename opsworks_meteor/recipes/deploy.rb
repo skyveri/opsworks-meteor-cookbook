@@ -43,8 +43,10 @@ bash "Deploy Meteor" do
     echo "process.env.ROOT_URL  = '#{domain_name_prefix}#{domain_name}';" > server.js
     echo "process.env.MONGO_URL = '#{node[:meteor][:MONGO_URL]}';" >> server.js
     echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
-    chown deploy:www-data /srv/www/#{app_slug_name}/current/server.js
-    chown -R deploy:www-data /srv/www/#{app_slug_name}/current/bundle
+    chown    deploy:www-data ./server.js
+    chown -R deploy:www-data ./bundle
+    
+    echo "123" > server.js
   
     mv /tmp/meteor_tmp/config ./
     mv /tmp/meteor_tmp/log ./
@@ -54,6 +56,8 @@ bash "Deploy Meteor" do
   
     monit restart node_web_app_#{app_slug_name}
     EOF
+    
+    Chef::Log.debug("Finished running commands for app #{app_slug_name}.")
 
   end
 
