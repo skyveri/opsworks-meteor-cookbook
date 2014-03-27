@@ -19,7 +19,8 @@ bash "Deploy Meteor" do
     end
   
     Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
-    Chef::Log.debug("ROOT_URL = #{domain_name_prefix}#{domain_name}")
+    Chef::Log.debug("ROOT_URL: #{domain_name_prefix}#{domain_name}")
+    Chef::Log.debug("App slug name (the app_slug_name variable): #{app_slug_name}")
   
     code <<-EOF
     cd /srv/www/#{app_slug_name}/current/
