@@ -3,10 +3,14 @@ bash "Deploy Meteor" do
   code <<-EOF
   cd /srv/www/skyveri_main_site/current/
 
-  rm -rf ./opsworks.js
-  rm -rf ./config
-  rm -rf ./
-  rm -rf ./
+  rm -rf /tmp/meteor_tmp
+  mkdir -p /tmp/meteor_tmp
+
+  mv ./config /tmp/meteor_tmp
+  mv ./log /tmp/meteor_tmp
+  mv ./opsworks.js /tmp/meteor_tmp
+  mv ./public /tmp/meteor_tmp
+  mv ./tmp /tmp/meteor_tmp
 
   rm -rf ./bundle
   rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
@@ -17,6 +21,13 @@ bash "Deploy Meteor" do
   echo "process.env.MONGO_URL = 'mongodb://skyveri_readonly:Feiun5s09@oceanic.mongohq.com:10016/skyveri_main'; process.env.PORT = 80; require('./bundle/main.js'); " > server.js
   chown deploy:www-data /srv/www/skyveri_main_site/current/server.js
   chown -R deploy:www-data /srv/www/skyveri_main_site/current/bundle
+
+  mv /tmp/meteor_tmp/config ./
+  mv /tmp/meteor_tmp/log ./
+  mv /tmp/meteor_tmp/opsworks.js ./
+  mv /tmp/meteor_tmp/public ./
+  mv /tmp/meteor_tmp/tmp ./
+
   monit restart node_web_app_skyveri_main_site
   EOF
 end
