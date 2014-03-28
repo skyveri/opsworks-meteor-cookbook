@@ -1,3 +1,13 @@
+deploy deploy[:deploy_to] do
+  Chef::Log.debug("! ! ! ! ! ! ! deploy resource definition started.")
+
+  before_symlink do
+    # Testing
+    Chef::Log.debug("! ! ! ! ! ! ! before_symlink fired.")
+  end
+end
+
+
 bash "Deploy Meteor" do
   user "root"
 
