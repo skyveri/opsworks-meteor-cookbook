@@ -1,5 +1,4 @@
 node[:deploy].each do |app_slug_name, deploy|
-
   deploy deploy[:deploy_to] do
 
     before_symlink do
