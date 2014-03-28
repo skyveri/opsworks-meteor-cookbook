@@ -1,8 +1,7 @@
 node[:deploy].each do |app_slug_name, app_deploy|
   deploy_to = app_deploy[:deploy_to]
 
-  deploy deploy_to do
-
+  deploy "#{deploy_to}" do
     before_symlink do
       if new_resource[:domains].length == 0
         Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
@@ -47,10 +46,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> #{current_release}/server.js"
         command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> #{current_release}/server.js"
         command "chown deploy:www-data #{current_release}/server.js"
-
       end
-
-      Chef::Log.debug("Finished running commands for #{current_release}")
     end
   end
 end
