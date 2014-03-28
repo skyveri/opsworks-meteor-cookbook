@@ -42,15 +42,16 @@ node[:deploy].each do |app_slug_name, app_deploy|
         
         # TEST
         command "echo 'TEST' > ./server.js"
+        command "echo 'TEST' > /tmp/server.js"
 
         # OpsWorks expects a server.js file
-        command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > ./server.js"
-        command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> ./server.js"
-        command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> ./server.js"
+        command "echo 'process.env.ROOT_URL  = \"#{protocol_prefix}#{domain_name}\";' > ./server.js"
+        command "echo 'process.env.MONGO_URL = \"#{mongo_url}\";' >> ./server.js"
+        command "echo 'process.env.PORT = 80; require(\"./bundle/main.js\");' >> ./server.js"
         command "chown deploy:www-data ./server.js"
 
         # Remove temp directory
-        command "rm -rf #{tmp_dir}"
+        # command "rm -rf #{tmp_dir}"
       end
     end
   end
