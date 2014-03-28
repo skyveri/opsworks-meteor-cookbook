@@ -16,7 +16,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
       end
 
       current_release = release_path
-      tmp_dir = "~/meteor_tmp"
+      tmp_dir = "~/.meteor_tmp"
       repo_dir = "#{app_deploy[:deploy_to]}/shared/cached-copy"
       mongo_url = node[:meteor][:MONGO_URL]
 
@@ -33,18 +33,18 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "meteor bundle bundled_app.tgz"
         command "tar -xzf bundled_app.tgz"
 
-        # # Copy the bundle folder into the release directory
-        # command "cp #{tmp_dir}/bundle #{current_release} -R"
-        # command "chown -R deploy:www-data #{current_release}/bundle"
+        # Copy the bundle folder into the release directory
+        command "cp #{tmp_dir}/bundle #{current_release} -R"
+        command "chown -R deploy:www-data #{current_release}/bundle"
 
-        # # Remove temp directory
-        # command "rm -rf #{tmp_dir}"
+        # Remove temp directory
+        command "rm -rf #{tmp_dir}"
 
-        # # OpsWorks expects a server.js file
-        # command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > #{current_release}/server.js"
-        # command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> #{current_release}/server.js"
-        # command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> #{current_release}/server.js"
-        # command "chown deploy:www-data #{current_release}/server.js"
+        # OpsWorks expects a server.js file
+        command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > #{current_release}/server.js"
+        command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> #{current_release}/server.js"
+        command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> #{current_release}/server.js"
+        command "chown deploy:www-data #{current_release}/server.js"
       end
     end
   end
