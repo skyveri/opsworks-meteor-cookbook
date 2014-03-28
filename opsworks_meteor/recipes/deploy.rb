@@ -29,7 +29,7 @@ node[:deploy].each do |app_slug_name, deploy|
         Chef::Log.debug("app_slug_name: #{app_slug_name}")
         Chef::Log.debug("current_release: #{current_release}")
 
-        bash "Deploy Meteor" do
+        execute "Deploy Meteor" do
           user "root"
 
           code <<-EOF
