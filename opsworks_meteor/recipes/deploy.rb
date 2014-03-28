@@ -16,13 +16,11 @@ node[:deploy].each do |app_slug_name, app_deploy|
       end
 
       current_release = release_path
-      tmp_dir = "/tmp/meteor_tmp"
+      tmp_dir = "~/meteor_tmp"
       repo_dir = "#{app_deploy[:deploy_to]}/shared/cached-copy"
       mongo_url = node[:meteor][:MONGO_URL]
 
       execute "Deploy Meteor" do
-        user "root"
-
         # Reset the Meteor temp directory
         command "rm -rf #{tmp_dir}"
         command "mkdir -p #{tmp_dir}"
@@ -38,6 +36,9 @@ node[:deploy].each do |app_slug_name, app_deploy|
         # # Copy the bundle folder into the release directory
         # command "cp #{tmp_dir}/bundle #{current_release} -R"
         # command "chown -R deploy:www-data #{current_release}/bundle"
+
+        # # Remove temp directory
+        # command "rm -rf #{tmp_dir}"
 
         # # OpsWorks expects a server.js file
         # command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > #{current_release}/server.js"
