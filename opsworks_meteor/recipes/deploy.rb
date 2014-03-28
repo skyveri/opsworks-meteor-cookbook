@@ -8,6 +8,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
 
       Chef::Log.debug("--------------------")
       Chef::Log.debug(new_release)
+      Chef::Log.debug(release_path)
       Chef::Log.debug("--------------------")
 
       # Using the first domain to create ROOT_URL for Meteor
