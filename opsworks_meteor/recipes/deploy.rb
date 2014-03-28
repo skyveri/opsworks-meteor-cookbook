@@ -37,14 +37,17 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "cp #{tmp_dir}/bundle #{current_release} -R"
         command "chown -R deploy:www-data #{current_release}/bundle"
 
-        # Remove temp directory
-        command "rm -rf #{tmp_dir}"
+        # cd into release directory
+        command "cd #{tmp_dir}"
 
         # OpsWorks expects a server.js file
-        command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > #{current_release}/server.js"
-        command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> #{current_release}/server.js"
-        command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> #{current_release}/server.js"
-        command "chown deploy:www-data #{current_release}/server.js"
+        command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > ./server.js"
+        command "echo \"process.env.MONGO_URL = '#{mongo_url}';\" >> ./server.js"
+        command "echo \"process.env.PORT = 80; require('./bundle/main.js');\" >> ./server.js"
+        command "chown deploy:www-data ./server.js"
+
+        # Remove temp directory
+        command "rm -rf #{current_release}"
       end
     end
   end
