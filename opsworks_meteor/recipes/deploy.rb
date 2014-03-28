@@ -4,38 +4,38 @@ node[:deploy].each do |app_slug_name, deploy|
     before_symlink do
       Chef::Log.debug("before_symlink script.")
 
-      bash "Deploy Meteor" do
-        user "root"
+      Chef::Log.debug("Starting to loop through each app.")
 
-        Chef::Log.debug("Starting to loop through each app.")
+      node[:deploy].each do |app_slug_name, deploy|
 
-        node[:deploy].each do |app_slug_name, deploy|
+        if deploy[:domains].length == 0
+          Chef::Log.debug("Skipping deploy::nodejs application #{application} does not have any domains configured.")
+          next
+        end
 
-          if deploy[:domains].length == 0
-            Chef::Log.debug("Skipping deploy::nodejs application #{application} does not have any domains configured.")
-            next
-          end
+        Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
 
-          Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
+        domain_name = deploy[:domains][0]
 
-          domain_name = deploy[:domains][0]
+        if deploy[:ssl_support]
+          protocol_prefix = "https://"
+        else
+          protocol_prefix = "http://"
+        end
 
-          if deploy[:ssl_support]
-            protocol_prefix = "https://"
-          else
-            protocol_prefix = "http://"
-          end
+        current_release = release_path
 
-          current_release = release_path
+        Chef::Log.debug("ROOT_URL: #{protocol_prefix}#{domain_name}")
+        Chef::Log.debug("app_slug_name: #{app_slug_name}")
+        Chef::Log.debug("current_release: #{current_release}")
 
-          Chef::Log.debug("ROOT_URL: #{protocol_prefix}#{domain_name}")
-          Chef::Log.debug("app_slug_name: #{app_slug_name}")
-          Chef::Log.debug("current_release: #{current_release}")
+        bash "Deploy Meteor" do
+          user "root"
 
           code <<-EOF
           echo "TEST" >> #{current_release}/server.js
           EOF
-          
+
           Chef::Log.debug("----------------- ADDED TEST ---------------")
 
           code <<-EOF
