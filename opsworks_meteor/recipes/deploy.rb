@@ -1,9 +1,11 @@
-deploy deploy[:deploy_to] do
-  Chef::Log.debug("! ! ! ! ! ! ! deploy resource definition started.")
-
-  before_symlink do
-    # Testing
-    Chef::Log.debug("! ! ! ! ! ! ! before_symlink fired.")
+node[:deploy].each do |app_slug_name, deploy|
+  deploy deploy[:deploy_to] do
+    Chef::Log.debug("! ! ! ! ! ! ! deploy resource definition started.")
+  
+    before_symlink do
+      # Testing
+      Chef::Log.debug("! ! ! ! ! ! ! before_symlink fired.")
+    end
   end
 end
 
