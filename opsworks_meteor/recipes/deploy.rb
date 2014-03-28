@@ -35,6 +35,13 @@ node[:deploy].each do |app_slug_name, deploy|
           code <<-EOF
 
           cd #{current_release}
+          echo "TEST" >> server.js
+
+          EOF
+
+          code <<-EOF
+
+          cd #{current_release}
 
           rm -rf /tmp/meteor_tmp
           mkdir -p /tmp/meteor_tmp
