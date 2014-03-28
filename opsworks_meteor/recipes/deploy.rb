@@ -1,5 +1,7 @@
 node[:deploy].each do |app_slug_name, app_deploy|
-  deploy "#{app_deploy[:deploy_to]}" do
+  deploy_to = app_deploy[:deploy_to]
+
+  deploy deploy_to do
 
     before_symlink do
       if new_resource[:domains].length == 0
