@@ -34,7 +34,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "tar -xzf bundled_app.tgz"
 
         # Copy the bundle folder into the release directory
-        command "cp #{tmp_dir}/bundle #{current_release} -R"
+        command "cp -R #{tmp_dir}/bundle #{current_release}"
         command "chown -R deploy:www-data #{current_release}/bundle"
 
         # cd into release directory
