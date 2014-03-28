@@ -33,15 +33,12 @@ node[:deploy].each do |app_slug_name, deploy|
           Chef::Log.debug("current_release: #{current_release}")
 
           code <<-EOF
-
           echo "TEST" >> #{current_release}/server.js
-
           EOF
           
           Chef::Log.debug("----------------- ADDED TEST ---------------")
 
           code <<-EOF
-
           cd #{current_release}
 
           rm -rf /tmp/meteor_tmp
