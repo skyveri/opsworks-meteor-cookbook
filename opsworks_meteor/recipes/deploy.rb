@@ -1,9 +1,9 @@
-node[:deploy].each do |app_slug_name, deploy|
-  deploy deploy[:deploy_to] do
+node[:deploy].each do |app_slug_name, app_deploy|
+  deploy app_deploy[:deploy_to] do
 
     before_symlink do
       if new_resource[:domains].length == 0
-        Chef::Log.debug("Skipping Meteor installation of #{application}. App does not have any domains configured.")
+        Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
         next
       end
 
@@ -48,10 +48,7 @@ node[:deploy].each do |app_slug_name, deploy|
 
       end
 
-      Chef::Log.debug("ROOT_URL: #{protocol_prefix}#{domain_name}")
-      Chef::Log.debug("app_slug_name: #{app_slug_name}")
-      Chef::Log.debug("current_release: #{current_release}")
-      Chef::Log.debug("Finished running commands for app #{app_slug_name}.")
+      Chef::Log.debug("Finished running commands for #{current_release}")
     end
   end
 end
