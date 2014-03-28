@@ -31,49 +31,47 @@ node[:deploy].each do |app_slug_name, deploy|
 
         execute "Deploy Meteor" do
           user "root"
-
-          code <<-EOF
-          echo "TEST" >> #{current_release}/server.js
-          EOF
+          
+          command "echo 'TEST' >> #{current_release}/server.js"
 
           Chef::Log.debug("----------------- ADDED TEST ---------------")
 
-          code <<-EOF
-          cd #{current_release}
+          # code <<-EOF
+          # cd #{current_release}
 
-          rm -rf /tmp/meteor_tmp
-          mkdir -p /tmp/meteor_tmp
+          # rm -rf /tmp/meteor_tmp
+          # mkdir -p /tmp/meteor_tmp
 
-          mv ./config /tmp/meteor_tmp
-          mv ./log /tmp/meteor_tmp
-          mv ./opsworks.js /tmp/meteor_tmp
-          mv ./public /tmp/meteor_tmp
-          mv ./tmp /tmp/meteor_tmp
+          # mv ./config /tmp/meteor_tmp
+          # mv ./log /tmp/meteor_tmp
+          # mv ./opsworks.js /tmp/meteor_tmp
+          # mv ./public /tmp/meteor_tmp
+          # mv ./tmp /tmp/meteor_tmp
 
-          mrt install
-          rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-          meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-          rm -rf ./bundle
-          tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-          rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-          echo "process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';" > server.js
-          echo "process.env.MONGO_URL = '#{node[:meteor][:MONGO_URL]}';" >> server.js
-          echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
-          chown    deploy:www-data ./server.js
-          chown -R deploy:www-data ./bundle
+          # mrt install
+          # rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+          # meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+          # rm -rf ./bundle
+          # tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+          # rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+          # echo "process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';" > server.js
+          # echo "process.env.MONGO_URL = '#{node[:meteor][:MONGO_URL]}';" >> server.js
+          # echo "process.env.PORT = 80; require('./bundle/main.js'); " >> server.js
+          # chown    deploy:www-data ./server.js
+          # chown -R deploy:www-data ./bundle
 
-          mv /tmp/meteor_tmp/config ./
-          mv /tmp/meteor_tmp/log ./
-          mv /tmp/meteor_tmp/opsworks.js ./
-          mv /tmp/meteor_tmp/public ./
-          mv /tmp/meteor_tmp/tmp ./
-          EOF
+          # mv /tmp/meteor_tmp/config ./
+          # mv /tmp/meteor_tmp/log ./
+          # mv /tmp/meteor_tmp/opsworks.js ./
+          # mv /tmp/meteor_tmp/public ./
+          # mv /tmp/meteor_tmp/tmp ./
+          # EOF
 
-          Chef::Log.debug("Restarting node.")
+          # Chef::Log.debug("Restarting node.")
 
-          code <<-EOF
-          monit restart node_web_app_#{app_slug_name}
-          EOF
+          # code <<-EOF
+          # monit restart node_web_app_#{app_slug_name}
+          # EOF
 
           Chef::Log.debug("Finished running commands for app #{app_slug_name}.")
 
