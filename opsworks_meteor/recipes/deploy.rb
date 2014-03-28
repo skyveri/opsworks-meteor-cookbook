@@ -38,7 +38,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "chown -R deploy:www-data #{current_release}/bundle"
 
         # cd into release directory
-        command "cd #{tmp_dir}"
+        command "cd #{current_release}"
 
         # OpsWorks expects a server.js file
         command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > ./server.js"
@@ -47,7 +47,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
         command "chown deploy:www-data ./server.js"
 
         # Remove temp directory
-        command "rm -rf #{current_release}"
+        command "rm -rf #{tmp_dir}"
       end
     end
   end
