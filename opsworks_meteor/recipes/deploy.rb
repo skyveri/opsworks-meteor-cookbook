@@ -17,7 +17,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
 
       current_release = release_path
       tmp_dir = "/tmp/meteor_tmp"
-      repo_dir = "#{app_deploy[:deploy_to]}/shared/#{app_deploy[:repository_cache]}"
+      repo_dir = "#{app_deploy[:deploy_to]}/shared/cached-copy"
       mongo_url = node[:meteor][:MONGO_URL]
 
       execute "Deploy Meteor" do
