@@ -2,15 +2,15 @@ node[:deploy].each do |app_slug_name, deploy|
   deploy deploy[:deploy_to] do
 
     before_symlink do
-      if deploy[:domains].length == 0
+      if new_resource[:domains].length == 0
         Chef::Log.debug("Skipping Meteor installation of #{application}. App does not have any domains configured.")
         next
       end
 
       # Using the first domain to create ROOT_URL for Meteor
-      domain_name = deploy[:domains][0]
+      domain_name = new_resource[:domains][0]
 
-      if deploy[:ssl_support]
+      if new_resource[:ssl_support]
         protocol_prefix = "https://"
       else
         protocol_prefix = "http://"
