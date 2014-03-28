@@ -54,7 +54,7 @@ node[:deploy].each do |app_slug_name, app_deploy|
         chown deploy:www-data ./server.js
 
         # Remove temp directory
-        # command "rm -rf #{tmp_dir}"
+        # rm -rf #{tmp_dir}
         EOH
       end
     end
