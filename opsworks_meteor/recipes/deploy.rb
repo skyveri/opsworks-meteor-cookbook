@@ -30,8 +30,9 @@ node[:deploy].each do |app_slug_name, app_deploy|
         # Reset the Meteor temp directory
         rm -rf #{tmp_dir}"
         mkdir -p #{tmp_dir}
+
         # Move files to the temp directory
-        cp #{repo_dir}/. #{tmp_dir} -R
+        cp -R #{repo_dir}/. #{tmp_dir}
 
         # Create a Meteor bundle
         cd #{tmp_dir}
