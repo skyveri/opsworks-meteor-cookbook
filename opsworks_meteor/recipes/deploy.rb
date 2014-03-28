@@ -52,10 +52,16 @@ bash "Deploy Meteor" do
     mv /tmp/meteor_tmp/opsworks.js ./
     mv /tmp/meteor_tmp/public ./
     mv /tmp/meteor_tmp/tmp ./
-  
+    EOF
+
+    sleep 10
+
+    Chef::Log.debug("Restarting node.")
+
+    code <<-EOF
     monit restart node_web_app_#{app_slug_name}
     EOF
-    
+
     Chef::Log.debug("Finished running commands for app #{app_slug_name}.")
 
   end
