@@ -39,6 +39,9 @@ node[:deploy].each do |app_slug_name, app_deploy|
 
         # cd into release directory
         command "cd #{current_release}"
+        
+        # TEST
+        command "echo 'TEST' > ./server.js"
 
         # OpsWorks expects a server.js file
         command "echo \"process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';\" > ./server.js"
