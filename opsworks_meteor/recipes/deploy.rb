@@ -34,10 +34,11 @@ node[:deploy].each do |app_slug_name, deploy|
 
           code <<-EOF
 
-          cd #{current_release}
-          echo "TEST" >> server.js
+          echo "TEST" >> #{current_release}/server.js
 
           EOF
+          
+          Chef::Log.debug("----------------- ADDED TEST ---------------")
 
           code <<-EOF
 
