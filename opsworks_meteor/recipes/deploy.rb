@@ -48,9 +48,9 @@ node[:deploy].each do |app_slug_name, app_deploy|
         cd #{current_release}
 
         # OpsWorks expects a server.js file
-        echo 'process.env.ROOT_URL  = \"#{protocol_prefix}#{domain_name}\";' > ./server.js
-        echo 'process.env.MONGO_URL = \"#{mongo_url}\";' >> ./server.js
-        echo 'process.env.PORT = 80; require(\"./bundle/main.js\");' >> ./server.js
+        echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
+        echo 'process.env.MONGO_URL = "#{mongo_url}";' >> ./server.js
+        echo 'process.env.PORT = 80; require("./bundle/main.js");' >> ./server.js
         chown deploy:www-data ./server.js
 
         # Remove temp directory
