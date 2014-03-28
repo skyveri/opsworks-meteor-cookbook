@@ -35,9 +35,9 @@ bash "Deploy Meteor" do
     mv ./public /tmp/meteor_tmp
     mv ./tmp /tmp/meteor_tmp
 
-    rm -rf ./bundle
-    rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     mrt install
+    rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+    rm -rf ./bundle
     meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
