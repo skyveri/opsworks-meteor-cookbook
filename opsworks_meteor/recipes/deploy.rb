@@ -32,8 +32,8 @@ node[:deploy].each do |app_slug_name, app_deploy|
         # Create a Meteor bundle
         cwd "#{tmp_dir}"
         command "mrt install"
-        # command "meteor bundle bundled_app.tgz"
-        # command "tar -xzf bundled_app.tgz"
+        command "meteor bundle bundled_app.tgz"
+        command "tar -xzf bundled_app.tgz"
 
         # # Copy the bundle folder into the release directory
         # command "cp #{tmp_dir}/bundle #{current_release} -R"
