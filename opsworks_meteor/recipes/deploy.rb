@@ -1,8 +1,8 @@
 node[:deploy].each do |app_slug_name, deploy|
   deploy deploy[:deploy_to] do
 
-    before_restart do
-      Chef::Log.debug("before_restart script.")
+    before_symlink do
+      Chef::Log.debug("before_symlink script.")
 
       bash "Deploy Meteor" do
         user "root"
@@ -16,6 +16,8 @@ node[:deploy].each do |app_slug_name, deploy|
             next
           end
 
+          Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
+
           domain_name = deploy[:domains][0]
 
           if deploy[:ssl_support]
@@ -24,13 +26,15 @@ node[:deploy].each do |app_slug_name, deploy|
             protocol_prefix = "http://"
           end
 
-          Chef::Log.debug("Using the first domain to create ROOT_URL for Meteor.")
+          current_release = release_path
+
           Chef::Log.debug("ROOT_URL: #{protocol_prefix}#{domain_name}")
-          Chef::Log.debug("App slug name (the app_slug_name variable): #{app_slug_name}")
+          Chef::Log.debug("app_slug_name: #{app_slug_name}")
+          Chef::Log.debug("current_release: #{current_release}")
 
           code <<-EOF
 
-          cd /srv/www/#{app_slug_name}/current/
+          cd #{current_release}
 
           rm -rf /tmp/meteor_tmp
           mkdir -p /tmp/meteor_tmp
