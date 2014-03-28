@@ -37,8 +37,8 @@ bash "Deploy Meteor" do
 
     mrt install
     rm -rf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
-    rm -rf ./bundle
     meteor bundle tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
+    rm -rf ./bundle
     tar -xzf tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     rm tmp_f90e9fkjkjf0s0esre0r9034932952359sfd90.tgz
     echo "process.env.ROOT_URL  = '#{protocol_prefix}#{domain_name}';" > server.js
