@@ -25,38 +25,36 @@ node[:deploy].each do |app_slug_name, app_deploy|
       repo_dir = "#{app_deploy[:deploy_to]}/shared/cached-copy"
       mongo_url = node[:meteor][:MONGO_URL]
 
-      execute "Deploy Meteor" do
+      bash "Deploy Meteor" do
+        code <<-EOH
         # Reset the Meteor temp directory
-        command "rm -rf #{tmp_dir}"
-        command "mkdir -p #{tmp_dir}"
+        rm -rf #{tmp_dir}"
+        mkdir -p #{tmp_dir}
         # Move files to the temp directory
-        command "cp #{repo_dir}/. #{tmp_dir} -R"
+        cp #{repo_dir}/. #{tmp_dir} -R
 
         # Create a Meteor bundle
-        command "cd #{tmp_dir}"
-        command "mrt install"
-        command "meteor bundle bundled_app.tgz"
-        command "tar -xzf bundled_app.tgz"
+        cd #{tmp_dir}
+        mrt install
+        meteor bundle bundled_app.tgz
+        tar -xzf bundled_app.tgz
 
         # Copy the bundle folder into the release directory
-        command "cp -R #{tmp_dir}/bundle #{current_release}"
-        command "chown -R deploy:www-data #{current_release}/bundle"
+        cp -R #{tmp_dir}/bundle #{current_release}
+        chown -R deploy:www-data #{current_release}/bundle
 
         # cd into release directory
-        command "cd #{current_release}"
-        
-        # TEST
-        command "echo 'TEST' > ./server.js"
-        command "echo 'TEST' > /tmp/server.js"
+        cd #{current_release}
 
         # OpsWorks expects a server.js file
-        command "echo 'process.env.ROOT_URL  = \"#{protocol_prefix}#{domain_name}\";' > ./server.js"
-        command "echo 'process.env.MONGO_URL = \"#{mongo_url}\";' >> ./server.js"
-        command "echo 'process.env.PORT = 80; require(\"./bundle/main.js\");' >> ./server.js"
-        command "chown deploy:www-data ./server.js"
+        echo 'process.env.ROOT_URL  = \"#{protocol_prefix}#{domain_name}\";' > ./server.js
+        echo 'process.env.MONGO_URL = \"#{mongo_url}\";' >> ./server.js
+        echo 'process.env.PORT = 80; require(\"./bundle/main.js\");' >> ./server.js
+        chown deploy:www-data ./server.js
 
         # Remove temp directory
         # command "rm -rf #{tmp_dir}"
+        EOH
       end
     end
   end
