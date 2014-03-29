@@ -82,10 +82,6 @@ define :meteor_deploy do
       symlink_before_migrate( deploy[:symlink_before_migrate] )
       action deploy[:action]
 
-      if deploy[:application_type] == 'rails'
-        restart_command "sleep #{deploy[:sleep_before_restart]} && #{node[:opsworks][:rails_stack][:restart_command]}"
-      end
-
       case app_config[:scm][:scm_type].to_s
       when 'git'
         scm_provider :git
@@ -161,57 +157,8 @@ define :meteor_deploy do
 
         link_tempfiles_to_current_release
 
-        if deploy[:application_type] == 'rails'
-          if deploy[:auto_bundle_on_deploy]
-            OpsWorks::RailsConfiguration.bundle(application, node[:deploy][application], release_path)
-          end
-
-          node.default[:deploy][application][:database][:adapter] = OpsWorks::RailsConfiguration.determine_database_adapter(
-            application,
-            node[:deploy][application],
-            release_path,
-            :force => node[:force_database_adapter_detection],
-            :consult_gemfile => node[:deploy][application][:auto_bundle_on_deploy]
-          )
-          template "#{node[:deploy][application][:deploy_to]}/shared/config/database.yml" do
-            cookbook "rails"
-            source "database.yml.erb"
-            mode "0660"
-            owner node[:deploy][application][:user]
-            group node[:deploy][application][:group]
-            variables(
-              :database => node[:deploy][application][:database],
-              :environment => node[:deploy][application][:rails_env]
-            )
-
-            only_if do
-              deploy[:database][:host].present?
-            end
-          end.run_action(:create)
-        elsif deploy[:application_type] == 'php'
-          template "#{node[:deploy][application][:deploy_to]}/shared/config/opsworks.php" do
-            cookbook 'php'
-            source 'opsworks.php.erb'
-            mode '0660'
-            owner node[:deploy][application][:user]
-            group node[:deploy][application][:group]
-            variables(
-              :database => node[:deploy][application][:database],
-              :memcached => node[:deploy][application][:memcached],
-              :layers => node[:opsworks][:layers],
-              :stack_name => node[:opsworks][:stack][:name]
-            )
-            only_if do
-              File.exists?("#{node[:deploy][application][:deploy_to]}/shared/config")
-            end
-          end
-        elsif deploy[:application_type] == 'nodejs'
-          if app_config[:scm]
-            Chef::Log.debug("+ + + + + + + + + TEST 5 + + + + + + + + +")
-          end
-          if deploy[:auto_npm_install_on_deploy]
-            OpsWorks::NodejsConfiguration.npm_install(application, node[:deploy][application], release_path)
-          end
+        if deploy[:auto_npm_install_on_deploy]
+          OpsWorks::NodejsConfiguration.npm_install(application, node[:deploy][application], release_path)
         end
 
         # run user provided callback file
@@ -223,26 +170,6 @@ define :meteor_deploy do
   ruby_block "change HOME back to /root after source checkout" do
     block do
       ENV['HOME'] = "/root"
-    end
-  end
-
-  if deploy[:application_type] == 'rails' && node[:opsworks][:instance][:layers].include?('rails-app')
-    case node[:opsworks][:rails_stack][:name]
-
-    when 'apache_passenger'
-      passenger_web_app do
-        application application
-        deploy deploy
-      end
-
-    when 'nginx_unicorn'
-      unicorn_web_app do
-        application application
-        deploy deploy
-      end
-
-    else
-      raise "Unsupport Rails stack"
     end
   end
 
