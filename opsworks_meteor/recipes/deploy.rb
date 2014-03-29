@@ -1,6 +1,6 @@
 node[:deploy].each do |app_slug_name, app_deploy|
   deploy app_deploy[:deploy_to] do
-    before_symlink do
+    before_migrate do
       # Check if domain name is set
       if app_deploy[:domains].length == 0
         Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
