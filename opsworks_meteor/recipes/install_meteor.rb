@@ -1,10 +1,10 @@
 bash "Install Meteor" do
   Chef::Log.debug("Starting Meteor install script.")
 
-  code <<-EOF
+  code <<-EOH
   curl https://install.meteor.com | /bin/sh
   npm install -g meteorite
-  EOF
+  EOH
 
   Chef::Log.debug("Finished Meteor install script.")
 end
