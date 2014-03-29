@@ -16,7 +16,6 @@ node[:deploy].each do |app_slug_name, app_deploy|
         protocol_prefix = "http://"
       end
 
-      current_release = release_path
       tmp_dir = "/tmp/meteor_tmp"
       repo_dir = "#{app_deploy[:deploy_to]}/shared/cached-copy"
       mongo_url = node[:meteor][:MONGO_URL]
@@ -37,11 +36,11 @@ node[:deploy].each do |app_slug_name, app_deploy|
         tar -xzf bundled_app.tgz
 
         # Copy the bundle folder into the release directory
-        cp -R #{tmp_dir}/bundle #{current_release}
-        chown -R deploy:www-data #{current_release}/bundle
+        cp -R #{tmp_dir}/bundle #{release_path}
+        chown -R deploy:www-data #{release_path}/bundle
 
         # cd into release directory
-        cd #{current_release}
+        cd #{release_path}
 
         # OpsWorks expects a server.js file
         echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
@@ -51,6 +50,9 @@ node[:deploy].each do |app_slug_name, app_deploy|
 
         # Remove the temp directory
         rm -rf #{tmp_dir}
+        
+        # Run user provided callback file
+        run_callback_from_file("#{release_path}/deploy/before_migrate.rb")
         EOH
       end
     end
