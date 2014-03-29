@@ -1,6 +1,9 @@
+Chef::Log.debug("+ + + + + + + + + TEST 1 + + + + + + + + +")
 define :opsworks_deploy do
   application = params[:app]
   deploy = params[:deploy_data]
+
+  Chef::Log.debug("+ + + + + + + + + TEST 2 + + + + + + + + +")
 
   directory "#{deploy[:deploy_to]}" do
     group deploy[:group]
@@ -96,8 +99,12 @@ define :opsworks_deploy do
         raise "unsupported SCM type #{deploy[:scm][:scm_type].inspect}"
       end
 
+      Chef::Log.debug("+ + + + + + + + + TEST 3 + + + + + + + + +")
+
       before_migrate do
         link_tempfiles_to_current_release
+
+        Chef::Log.debug("+ + + + + + + + + TEST 4 + + + + + + + + +")
 
         if deploy[:application_type] == 'rails'
           if deploy[:auto_bundle_on_deploy]
@@ -145,7 +152,7 @@ define :opsworks_deploy do
           end
         elsif deploy[:application_type] == 'nodejs'
           if deploy[:scm]
-            Chef::Log.debug("+ + + + + + + + + TEST + + + + + + + + +")
+            Chef::Log.debug("+ + + + + + + + + TEST 5 + + + + + + + + +")
           end
           if deploy[:auto_npm_install_on_deploy]
             OpsWorks::NodejsConfiguration.npm_install(application, node[:deploy][application], release_path)
