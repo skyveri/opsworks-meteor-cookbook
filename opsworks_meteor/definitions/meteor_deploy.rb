@@ -1,7 +1,9 @@
 Chef::Log.debug("+ + + + + + + + + TEST 1 + + + + + + + + +")
-define :opsworks_deploy do
+
+define :meteor_deploy do
   application = params[:app]
   deploy = params[:deploy_data]
+  app_config = params[:app_config]
 
   Chef::Log.debug("+ + + + + + + + + TEST 2 + + + + + + + + +")
 
@@ -13,15 +15,15 @@ define :opsworks_deploy do
     recursive true
   end
 
-  if deploy[:scm]
-    ensure_scm_package_installed(deploy[:scm][:scm_type])
+  if app_config[:scm]
+    ensure_scm_package_installed(app_config[:scm][:scm_type])
 
     prepare_git_checkouts(
       :user => deploy[:user],
       :group => deploy[:group],
       :home => deploy[:home],
-      :ssh_key => deploy[:scm][:ssh_key]
-    ) if deploy[:scm][:scm_type].to_s == 'git'
+      :ssh_key => app_config[:scm][:ssh_key]
+    ) if app_config[:scm][:scm_type].to_s == 'git'
 
     prepare_svn_checkouts(
       :user => deploy[:user],
@@ -29,16 +31,16 @@ define :opsworks_deploy do
       :home => deploy[:home],
       :deploy => deploy,
       :application => application
-    ) if deploy[:scm][:scm_type].to_s == 'svn'
+    ) if app_config[:scm][:scm_type].to_s == 'svn'
 
-    if deploy[:scm][:scm_type].to_s == 'archive'
-      repository = prepare_archive_checkouts(deploy[:scm])
+    if app_config[:scm][:scm_type].to_s == 'archive'
+      repository = prepare_archive_checkouts(app_config[:scm])
       node.set[:deploy][application][:scm] = {
         :scm_type => 'git',
         :repository => repository
       }
-    elsif deploy[:scm][:scm_type].to_s == 's3'
-      repository = prepare_s3_checkouts(deploy[:scm])
+    elsif app_config[:scm][:scm_type].to_s == 's3'
+      repository = prepare_s3_checkouts(app_config[:scm])
       node.set[:deploy][application][:scm] = {
         :scm_type => 'git',
         :repository => repository
@@ -63,17 +65,17 @@ define :opsworks_deploy do
   end
 
   # setup deployment & checkout
-  if deploy[:scm] && deploy[:scm][:scm_type] != 'other'
+  if app_config[:scm] && app_config[:scm][:scm_type] != 'other'
     Chef::Log.debug("Checking out source code of application #{application} with type #{deploy[:application_type]}")
     deploy deploy[:deploy_to] do
       provider Chef::Provider::Deploy.const_get(deploy[:chef_provider])
       if deploy[:keep_releases]
         keep_releases deploy[:keep_releases]
       end
-      repository deploy[:scm][:repository]
+      repository app_config[:scm][:repository]
       user deploy[:user]
       group deploy[:group]
-      revision deploy[:scm][:revision]
+      revision app_config[:scm][:revision]
       migrate deploy[:migrate]
       migration_command deploy[:migrate_command]
       environment deploy[:environment].to_hash
@@ -84,27 +86,80 @@ define :opsworks_deploy do
         restart_command "sleep #{deploy[:sleep_before_restart]} && #{node[:opsworks][:rails_stack][:restart_command]}"
       end
 
-      case deploy[:scm][:scm_type].to_s
+      case app_config[:scm][:scm_type].to_s
       when 'git'
         scm_provider :git
         enable_submodules deploy[:enable_submodules]
         shallow_clone deploy[:shallow_clone]
       when 'svn'
         scm_provider :subversion
-        svn_username deploy[:scm][:user]
-        svn_password deploy[:scm][:password]
+        svn_username app_config[:scm][:user]
+        svn_password app_config[:scm][:password]
         svn_arguments "--no-auth-cache --non-interactive --trust-server-cert"
         svn_info_args "--no-auth-cache --non-interactive --trust-server-cert"
       else
-        raise "unsupported SCM type #{deploy[:scm][:scm_type].inspect}"
+        raise "unsupported SCM type #{app_config[:scm][:scm_type].inspect}"
       end
 
       Chef::Log.debug("+ + + + + + + + + TEST 3 + + + + + + + + +")
 
       before_migrate do
-        link_tempfiles_to_current_release
 
         Chef::Log.debug("+ + + + + + + + + TEST 4 + + + + + + + + +")
+
+        # Check if domain name is set
+        if deploy[:domains].length == 0
+          Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
+          next
+        end
+
+        # Using the first domain to create ROOT_URL for Meteor
+        domain_name = deploy[:domains][0]
+
+        if deploy[:ssl_support]
+          protocol_prefix = "https://"
+        else
+          protocol_prefix = "http://"
+        end
+
+        tmp_dir = "/tmp/meteor_tmp"
+        repo_dir = "#{deploy[:deploy_to]}/shared/cached-copy"
+        mongo_url = app_config[:mongo_url]
+
+        bash "Deploy Meteor" do
+          code <<-EOH
+          # Reset the Meteor temp directory
+          rm -rf #{tmp_dir}
+          mkdir -p #{tmp_dir}
+
+          # Move files to the temp directory
+          cp -R #{repo_dir}/. #{tmp_dir}
+
+          # Create a Meteor bundle
+          cd #{tmp_dir}
+          mrt install
+          meteor bundle bundled_app.tgz
+          tar -xzf bundled_app.tgz
+
+          # Copy the bundle folder into the release directory
+          cp -R #{tmp_dir}/bundle #{release_path}
+          chown -R deploy:www-data #{release_path}/bundle
+
+          # cd into release directory
+          cd #{release_path}
+
+          # OpsWorks expects a server.js file
+          echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
+          echo 'process.env.MONGO_URL = "#{mongo_url}";' >> ./server.js
+          echo 'process.env.PORT = 80; require("./bundle/main.js");' >> ./server.js
+          chown deploy:www-data ./server.js
+
+          # Remove the temp directory
+          rm -rf #{tmp_dir}
+          EOH
+        end
+
+        link_tempfiles_to_current_release
 
         if deploy[:application_type] == 'rails'
           if deploy[:auto_bundle_on_deploy]
@@ -151,7 +206,7 @@ define :opsworks_deploy do
             end
           end
         elsif deploy[:application_type] == 'nodejs'
-          if deploy[:scm]
+          if app_config[:scm]
             Chef::Log.debug("+ + + + + + + + + TEST 5 + + + + + + + + +")
           end
           if deploy[:auto_npm_install_on_deploy]
