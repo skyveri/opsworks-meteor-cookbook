@@ -1,6 +1,7 @@
 node[:deploy].each do |app_slug_name, app_deploy|
   deploy app_deploy[:deploy_to] do
     before_symlink do
+      # Check if domain name is set
       if app_deploy[:domains].length == 0
         Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
         next
@@ -48,8 +49,8 @@ node[:deploy].each do |app_slug_name, app_deploy|
         echo 'process.env.PORT = 80; require("./bundle/main.js");' >> ./server.js
         chown deploy:www-data ./server.js
 
-        # Remove temp directory
-        # rm -rf #{tmp_dir}
+        # Remove the temp directory
+        rm -rf #{tmp_dir}
         EOH
       end
     end
