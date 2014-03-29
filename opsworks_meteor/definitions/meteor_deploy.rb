@@ -1,11 +1,17 @@
-Chef::Log.debug("+ + + + + + + + + TEST 1 + + + + + + + + +")
+#
+# Based on:
+# https://github.com/aws/opsworks-cookbooks/blob/release-chef-11.4/deploy/definitions/opsworks_deploy.rb
+#
+# Ruby on Rails related code has been removed.
+# Uses custom app config for SCM info. Do not specify "Repository Type" in App settings (in AWS console).
+# Meteor installation code has been added.
+#
+
 
 define :meteor_deploy do
   application = params[:app]
   deploy = params[:deploy_data]
   app_config = params[:app_config]
-
-  Chef::Log.debug("+ + + + + + + + + TEST 2 + + + + + + + + +")
 
   directory "#{deploy[:deploy_to]}" do
     group deploy[:group]
@@ -97,12 +103,7 @@ define :meteor_deploy do
         raise "unsupported SCM type #{app_config[:scm][:scm_type].inspect}"
       end
 
-      Chef::Log.debug("+ + + + + + + + + TEST 3 + + + + + + + + +")
-
       before_migrate do
-
-        Chef::Log.debug("+ + + + + + + + + TEST 4 + + + + + + + + +")
-
         # Check if domain name is set
         if deploy[:domains].length == 0
           Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
