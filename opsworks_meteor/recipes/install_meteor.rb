@@ -1,6 +1,4 @@
 bash "Install Meteor" do
-  user "root"
-
   Chef::Log.debug("Starting Meteor install script.")
 
   code <<-EOF
