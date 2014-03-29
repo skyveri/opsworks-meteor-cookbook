@@ -50,11 +50,11 @@ node[:deploy].each do |app_slug_name, app_deploy|
 
         # Remove the temp directory
         rm -rf #{tmp_dir}
-        
-        # Run user provided callback file
-        run_callback_from_file("#{release_path}/deploy/before_migrate.rb")
         EOH
       end
+
+      # Run user provided callback file
+      run_callback_from_file("#{release_path}/deploy/before_migrate.rb")
     end
   end
 end
