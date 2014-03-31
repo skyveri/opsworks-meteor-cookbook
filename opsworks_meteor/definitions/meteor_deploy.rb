@@ -102,6 +102,13 @@ define :meteor_deploy do
       else
         raise "unsupported SCM type #{app_config[:scm][:scm_type].inspect}"
       end
+      
+      before_restart do
+        bash "Restart Node" do
+          code <<-EOH
+          monit restart node_web_app_#{app_slug_name}
+          EOH
+      end
 
       before_migrate do
         # Check if domain name is set
