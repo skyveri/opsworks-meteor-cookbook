@@ -106,7 +106,6 @@ define :meteor_deploy do
       before_restart do
         bash "Restart Node" do
           user "root"
-
           code <<-EOH
           monit restart node_web_app_#{app_slug_name}
           EOH
