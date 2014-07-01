@@ -1,6 +1,6 @@
 #
 # Based on:
-# https://github.com/aws/opsworks-cookbooks/blob/release-chef-11.4/deploy/definitions/opsworks_deploy.rb
+# https://github.com/aws/opsworks-cookbooks/blob/release-chef-11.10/deploy/definitions/opsworks_deploy.rb
 #
 # Ruby on Rails related code has been removed.
 # Uses custom app config for SCM info. Do not specify "Repository Type" in App settings (in AWS console).
@@ -75,9 +75,7 @@ define :meteor_deploy do
     Chef::Log.debug("Checking out source code of application #{application} with type #{deploy[:application_type]}")
     deploy deploy[:deploy_to] do
       provider Chef::Provider::Deploy.const_get(deploy[:chef_provider])
-      if deploy[:keep_releases]
-        keep_releases deploy[:keep_releases]
-      end
+      keep_releases deploy[:keep_releases]
       repository app_config[:scm][:repository]
       user deploy[:user]
       group deploy[:group]
@@ -168,7 +166,7 @@ define :meteor_deploy do
         link_tempfiles_to_current_release
 
         if deploy[:auto_npm_install_on_deploy]
-          OpsWorks::NodejsConfiguration.npm_install(application, node[:deploy][application], release_path)
+          OpsWorks::NodejsConfiguration.npm_install(application, node[:deploy][application], release_path, node[:opsworks_nodejs][:npm_install_options])
         end
 
         # run user provided callback file
