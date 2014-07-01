@@ -109,6 +109,7 @@ define :meteor_deploy do
           code <<-EOH
           monit restart node_web_app_#{app_slug_name}
           EOH
+        end
       end
 
       before_migrate do
