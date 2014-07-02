@@ -144,6 +144,10 @@ define :meteor_deploy do
           mrt install
           meteor bundle bundled_app.tgz
           tar -xzf bundled_app.tgz
+          
+          # Meteor expects a version of Node that might not be available in OpsWorks
+          # Adjust the required Node version as a workaround
+          find #{tmp_dir}/bundle -name \*.js -exec sed -i "s/MIN_NODE_VERSION\ =\ 'v0\.10\.2.';/MIN_NODE_VERSION\ =\ 'v0\.10\.27';/g" {} \;
 
           # Copy the bundle folder into the release directory
           cp -R #{tmp_dir}/bundle #{release_path}
@@ -151,10 +155,6 @@ define :meteor_deploy do
 
           # cd into release directory
           cd #{release_path}
-          
-          # Meteor expects a version of Node that might not be available in OpsWorks
-          # Adjust the required Node version as a workaround
-          find ./ -name \*.js -exec sed -i "s/MIN_NODE_VERSION\ =\ 'v0\.10\.2.';/MIN_NODE_VERSION\ =\ 'v0\.10\.27';/g" {} \;
 
           # OpsWorks expects a server.js file
           echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
