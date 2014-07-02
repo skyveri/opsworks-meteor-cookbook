@@ -105,7 +105,7 @@ define :meteor_deploy do
         bash "Restart Node" do
           user "root"
           code <<-EOH
-          monit restart node_web_app_#{app_slug_name}
+          monit restart node_web_app_#{application}
           EOH
         end
       end
@@ -113,7 +113,7 @@ define :meteor_deploy do
       before_migrate do
         # Check if domain name is set
         if deploy[:domains].length == 0
-          Chef::Log.debug("Skipping Meteor installation of #{app_slug_name}. App does not have any domains configured.")
+          Chef::Log.debug("Skipping Meteor installation of #{application}. App does not have any domains configured.")
           next
         end
 
