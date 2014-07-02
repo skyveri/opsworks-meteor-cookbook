@@ -168,7 +168,8 @@ define :meteor_deploy do
           code <<-EOH
           # Meteor expects a version of Node that might not be available in OpsWorks
           # Adjust the required Node version as a workaround
-          find #{release_path}/bundle -name \*.js -exec sed -i "s/MIN_NODE_VERSION\ =\ 'v0\.10\.2.';/MIN_NODE_VERSION\ =\ 'v0\.10\.27';/g" "{}" \;
+          sed -i "s/MIN_NODE_VERSION\ =\ 'v0\.10\.2.';/MIN_NODE_VERSION\ =\ 'v0\.10\.27';/g" #{release_path}/bundle/programs/ctl/boot.js
+          sed -i "s/MIN_NODE_VERSION\ =\ 'v0\.10\.2.';/MIN_NODE_VERSION\ =\ 'v0\.10\.27';/g" #{release_path}/bundle/programs/server/boot.js
           cd ./
           EOH
         end
