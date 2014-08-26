@@ -155,7 +155,8 @@ define :meteor_deploy do
           # OpsWorks expects a server.js file
           echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
           echo 'process.env.MONGO_URL = "#{mongo_url}";' >> ./server.js
-          echo 'process.env.PORT = 80; require("./bundle/main.js");' >> ./server.js
+          echo 'process.env.PORT = 80;' >> ./server.js
+          echo 'require("./bundle/main.js");' >> ./server.js
           chown deploy:www-data ./server.js
 
           # Remove the temp directory
