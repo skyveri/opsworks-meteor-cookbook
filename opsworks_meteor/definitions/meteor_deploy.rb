@@ -174,8 +174,8 @@ var fs = require('fs'),
 
 var server = httpProxy.createProxyServer({
   ssl: {
-    key: fs.readFileSync(#{deploy[:deploy_to]}/shared/config/ssl.key, 'utf8'),
-    cert: fs.readFileSync(#{deploy[:deploy_to]}/shared/config/ssl.crt, 'utf8')
+    key: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.key', 'utf8'),
+    cert: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.crt', 'utf8')
   },
   target : "http://localhost",
   ws: true,
