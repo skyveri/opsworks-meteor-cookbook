@@ -153,10 +153,34 @@ define :meteor_deploy do
           cd #{release_path}
 
           # OpsWorks expects a server.js file
-          echo 'process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";' > ./server.js
-          echo 'process.env.MONGO_URL = "#{mongo_url}";' >> ./server.js
-          echo 'process.env.PORT = 80;' >> ./server.js
-          echo 'require("./bundle/main.js");' >> ./server.js
+
+          SERVER_FILE_CONTENTS=$(cat <<EOF
+
+// Meteor
+
+process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";
+process.env.MONGO_URL = "#{mongo_url}";
+process.env.PORT = 80;
+require("./bundle/main.js");
+
+// Proxy (for HTTPS)
+
+var fs = require('fs'),
+    httpProxy = require('http-proxy');
+
+var server = httpProxy.createProxyServer({
+  ssl: {
+    key: fs.readFileSync(#{deploy[:deploy_to]}/shared/config/ssl.key, 'utf8'),
+    cert: fs.readFileSync(#{deploy[:deploy_to]}/shared/config/ssl.crt, 'utf8')
+  },
+  target : "http://localhost",
+  ws: true,
+  xfwd: true
+}).listen(443);
+
+EOF
+)
+          echo "${SERVER_FILE_CONTENTS}"
 
           chown deploy:www-data ./server.js
 
