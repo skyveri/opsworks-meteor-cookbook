@@ -180,7 +180,7 @@ var server = httpProxy.createProxyServer({
 
 EOF
 )
-          echo "${SERVER_FILE_CONTENTS}"
+          echo "${SERVER_FILE_CONTENTS}" > ./server.js
 
           chown deploy:www-data ./server.js
 
