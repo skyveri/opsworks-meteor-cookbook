@@ -152,6 +152,10 @@ define :meteor_deploy do
           # cd into release directory
           cd #{release_path}
 
+          # Install an proxy server
+
+          npm install http-proxy
+
           # OpsWorks expects a server.js file
 
           SERVER_FILE_CONTENTS=$(cat <<EOF
