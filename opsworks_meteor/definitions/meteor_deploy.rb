@@ -172,7 +172,7 @@ require("./bundle/main.js");
 var fs = require('fs'),
     httpProxy = require('http-proxy');
 
-var server = httpProxy.createProxyServer({
+httpProxy.createProxyServer({
   ssl: {
     key: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.key', 'utf8'),
     cert: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.crt', 'utf8')
