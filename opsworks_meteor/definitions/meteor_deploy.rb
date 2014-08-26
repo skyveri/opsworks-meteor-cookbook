@@ -157,6 +157,7 @@ define :meteor_deploy do
           echo 'process.env.MONGO_URL = "#{mongo_url}";' >> ./server.js
           echo 'process.env.PORT = 80;' >> ./server.js
           echo 'require("./bundle/main.js");' >> ./server.js
+
           chown deploy:www-data ./server.js
 
           # Remove the temp directory
