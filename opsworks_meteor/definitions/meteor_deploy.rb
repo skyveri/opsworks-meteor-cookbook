@@ -117,8 +117,18 @@ define :meteor_deploy do
           next
         end
 
+        # Using the first domain to create ROOT_URL for Meteor
+        domain_name = deploy[:domains][0]
+
+        if deploy[:ssl_support]
+          protocol_prefix = "https://"
+        else
+          protocol_prefix = "http://"
+        end
+
         tmp_dir = "/tmp/meteor_tmp"
         repo_dir = "#{deploy[:deploy_to]}/shared/cached-copy"
+        mongo_url = app_config[:mongo_url]
 
         bash "Deploy Meteor" do
           code <<-EOH
@@ -152,6 +162,8 @@ define :meteor_deploy do
 
 // Meteor
 
+process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";
+process.env.MONGO_URL = "#{mongo_url}";
 process.env.PORT = 80;
 require("./bundle/main.js");
 
