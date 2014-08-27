@@ -14,10 +14,10 @@ define :meteor_deploy do
 
   app_config = {
     "scm" => {
-      "scm_type" => deploy[:environment][:scm__scm_type].to_s,
-      "repository" => deploy[:environment][:scm__repository].to_s,
-      "ssh_key" => "",#deploy[:environment][:scm__ssh_key].to_s,
-      "revision" => deploy[:environment][:scm__revision].to_s
+      "scm_type" => "#{deploy[:environment][:scm__scm_type]}",
+      "repository" => "#{deploy[:environment][:scm__repository]}",
+      "ssh_key" => "#{deploy[:environment][:scm__ssh_key]}",
+      "revision" => "#{deploy[:environment][:scm__revision]}"
     }
   }
   # app_config = params[:app_config]
