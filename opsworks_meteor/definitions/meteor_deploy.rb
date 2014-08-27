@@ -20,7 +20,6 @@ define :meteor_deploy do
       "revision" => "#{deploy[:environment][:scm__revision]}"
     }
   }
-  # app_config = params[:app_config]
 
   directory "#{deploy[:deploy_to]}" do
     group deploy[:group]
@@ -137,7 +136,6 @@ define :meteor_deploy do
 
         tmp_dir = "/tmp/meteor_tmp"
         repo_dir = "#{deploy[:deploy_to]}/shared/cached-copy"
-        mongo_url = deploy[:environment][:MONGO_URL].to_s
 
         bash "Deploy Meteor" do
           code <<-EOH
@@ -172,7 +170,7 @@ define :meteor_deploy do
 // Meteor
 
 process.env.ROOT_URL  = "#{protocol_prefix}#{domain_name}";
-process.env.MONGO_URL = "#{mongo_url}";
+process.env.MONGO_URL = "#{deploy[:environment][:MONGO_URL]}";
 process.env.PORT = 80;
 require("./bundle/main.js");
 
