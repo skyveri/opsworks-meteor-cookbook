@@ -11,7 +11,15 @@
 define :meteor_deploy do
   application = params[:app]
   deploy = params[:deploy_data]
-  app_config = params[:app_config]
+
+  app_config = {
+    "scm" => {
+      "scm_type" => deploy[:scm__scm_type]
+      "repository" => deploy[:scm__repository]
+      "ssh_key" => deploy[:scm__ssh_key]
+      "revision" => deploy[:scm__revision]
+    }
+  }
 
   directory "#{deploy[:deploy_to]}" do
     group deploy[:group]
