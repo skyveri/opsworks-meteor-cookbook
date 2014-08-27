@@ -136,7 +136,7 @@ define :meteor_deploy do
 
         tmp_dir = "/tmp/meteor_tmp"
         repo_dir = "#{deploy[:deploy_to]}/shared/cached-copy"
-        mongo_url = app_config[:mongo_url]
+        mongo_url = deploy[:MONGO_URL].to_s
 
         bash "Deploy Meteor" do
           code <<-EOH
