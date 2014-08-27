@@ -11,6 +11,8 @@
 define :meteor_deploy do
   application = params[:app]
   deploy = params[:deploy_data]
+  
+  Chef::Log.debug("DEBUG-1")
 
   app_config = {
     "scm" => {
@@ -20,6 +22,8 @@ define :meteor_deploy do
       "revision" => deploy[:environment][:scm__revision].to_s
     }
   }
+  
+  Chef::Log.debug("DEBUG-2")
 
   directory "#{deploy[:deploy_to]}" do
     group deploy[:group]
