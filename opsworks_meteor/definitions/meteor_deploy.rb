@@ -160,7 +160,7 @@ define :meteor_deploy do
           # cd into release directory
           cd #{release_path}
 
-          # Install an proxy server
+          # Install a proxy server
 
           npm install http-proxy
 
