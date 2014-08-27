@@ -14,10 +14,10 @@ define :meteor_deploy do
 
   app_config = {
     "scm" => {
-      "scm_type" => deploy[:scm__scm_type].to_s,
-      "repository" => deploy[:scm__repository].to_s,
-      "ssh_key" => deploy[:scm__ssh_key].to_s,
-      "revision" => deploy[:scm__revision].to_s
+      "scm_type" => deploy[:environment][:scm__scm_type].to_s,
+      "repository" => deploy[:environment][:scm__repository].to_s,
+      "ssh_key" => deploy[:environment][:scm__ssh_key].to_s,
+      "revision" => deploy[:environment][:scm__revision].to_s
     }
   }
 
@@ -136,7 +136,7 @@ define :meteor_deploy do
 
         tmp_dir = "/tmp/meteor_tmp"
         repo_dir = "#{deploy[:deploy_to]}/shared/cached-copy"
-        mongo_url = deploy[:MONGO_URL].to_s
+        mongo_url = deploy[:environment][:MONGO_URL].to_s
 
         bash "Deploy Meteor" do
           code <<-EOH
