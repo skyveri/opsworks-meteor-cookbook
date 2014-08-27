@@ -15,6 +15,7 @@ node[:deploy].each do |application, deploy|
   meteor_deploy do
     deploy_data deploy
     app application
+    app_config node[:custom_config][application.to_sym]
   end
 
 end
