@@ -176,18 +176,22 @@ require("./bundle/main.js");
 
 // Proxy (for HTTPS)
 
-var fs = require('fs'),
-    httpProxy = require('http-proxy');
+try {
 
-httpProxy.createProxyServer({
-  ssl: {
-    key: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.key', 'utf8'),
-    cert: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.crt', 'utf8')
-  },
-  target : "http://localhost",
-  ws: true,
-  xfwd: true
-}).listen(443);
+  var fs = require('fs'),
+      httpProxy = require('http-proxy');
+  
+  httpProxy.createProxyServer({
+    ssl: {
+      key: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.key', 'utf8'),
+      cert: fs.readFileSync('#{deploy[:deploy_to]}/shared/config/ssl.crt', 'utf8')
+    },
+    target : "http://localhost",
+    ws: true,
+    xfwd: true
+  }).listen(443);
+
+} catch(err) {}
 
 EOF
 )
