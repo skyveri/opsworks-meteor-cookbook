@@ -11,6 +11,8 @@ node[:deploy].each do |application, deploy|
     Chef::Log.debug("Skipping deploy for application #{application} as it is not a Meteor app")
     next
   end
+  
+  Chef::Log.debug("Start deploy for Meteor application #{application}")
 
   meteor_deploy do
     deploy_data deploy
